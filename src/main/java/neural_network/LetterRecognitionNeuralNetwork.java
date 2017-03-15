@@ -31,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class LetterRecognitionNeuralNetwork {
-    private static Logger log = LoggerFactory.getLogger(LetterRecognitionNeuralNetwork.class);
+    private static Logger Log = LoggerFactory.getLogger(LetterRecognitionNeuralNetwork.class);
+
+    private static final String FILENAME = "letter-recognition.csv";
 
     private static UIServer uiServer;
     private static StatsStorage statsStorage;
@@ -44,9 +46,9 @@ public class LetterRecognitionNeuralNetwork {
 
     private static final int numClasses = 26;
     private static final int numInputs = 16;
-    private static final int numHidden = 13;
+    private static final int numHidden = 52;
     private static final int numOutputs = 26;
-    private static final double learningRate = 0.1;
+    private static final double learningRate = 0.9;
     private static final int iterations = 10000;
     private static final long seed = 13;
 
@@ -59,10 +61,10 @@ public class LetterRecognitionNeuralNetwork {
         int labelIndex = 0;
         int batchSize = 20000;
 
-        log.info("Récupération du jeu de données");
+        Log.info("Loading dataset");
 
         RecordReader recordReader = new CSVRecordReader(numLinesToSkip, delimiter);
-        recordReader.initialize(new FileSplit(new ClassPathResource("letter-recognition.csv").getFile()));
+        recordReader.initialize(new FileSplit(new ClassPathResource(FILENAME).getFile()));
 
         DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex, numClasses);
         allData = iterator.next();
@@ -72,7 +74,7 @@ public class LetterRecognitionNeuralNetwork {
     }
 
     private static void normalizeData() {
-        log.info("Normalisation des données");
+        Log.info("Normalizing data");
 
         normalizer = new NormalizerStandardize();
         normalizer.fit(trainingData);
@@ -81,7 +83,7 @@ public class LetterRecognitionNeuralNetwork {
     }
 
     private static void buildNetwork() {
-        log.info("Construction du modèle...");
+        Log.info("Building model...");
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
@@ -101,29 +103,29 @@ public class LetterRecognitionNeuralNetwork {
                 .backprop(true).pretrain(false)
                 .build();
 
-        log.info("Exécution du modèle...");
+        Log.info("Building neural network...");
         net = new MultiLayerNetwork(conf);
         net.init();
         net.setListeners(new ScoreIterationListener(100), new StatsListener(statsStorage));
     }
 
     private static void train() {
-        log.info("Entraînement...");
+        Log.info("Training neural network...");
         net.fit(trainingData);
     }
 
     private static void evaluate() {
-        log.info("Evaluation du modèle...");
+        Log.info("Evaluate neural network...");
 
         Evaluation eval = new Evaluation(numClasses);
         INDArray output = net.output(testData.getFeatureMatrix());
         eval.eval(testData.getLabels(), output);
 
-        log.info(eval.stats());
+        Log.info(eval.stats());
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        log.info("Lancement du programme.");
+        Log.info("Launching program.");
 
         uiServer = UIServer.getInstance();
         statsStorage = new InMemoryStatsStorage();
@@ -135,7 +137,7 @@ public class LetterRecognitionNeuralNetwork {
         train();
         evaluate();
 
-        log.info("Fin du programme.");
+        Log.info("End of the program.");
     }
 
 }
