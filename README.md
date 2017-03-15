@@ -19,6 +19,7 @@ The [LetterRecognitionNeuralNetwork](https://github.com/jfourmond/LetterRecognit
 - Number of hidden neurons per layers
 - Number of outputs neurons per layers
 - Learning Rate
+- Activation Function
 - Number of iterations
 - Seed
 - ...
