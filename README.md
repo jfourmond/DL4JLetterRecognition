@@ -14,7 +14,7 @@ The [DataConverter](https://github.com/jfourmond/LetterRecognition/blob/master/s
 
 ## Letter Recognition Neural Network
 
-The [LetterRecognitionNeuralNetwork](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/java/converter/LetterRecognitionNeuralNetwork.java) class can be run in order to visualize and test your configuration :
+The [LetterRecognitionNeuralNetwork](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/java/converter/LetterRecognitionNeuralNetwork.java) class can be run in order to visualize and test your configuration, as the raw one has been chosen totally arbitrarily :
 - Number of layers
 - Number of hidden neurons per layers
 - Number of outputs neurons per layers
