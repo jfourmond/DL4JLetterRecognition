@@ -77,6 +77,7 @@ public class DataConverter {
          *  17.	yegvx	correlation of y-ege with x	(integer)
          */
 
+        /* Declaring Schema */
         Schema inputDataSchema = new Schema.Builder()
                 .addColumnCategorical("lettr", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                         "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
@@ -84,10 +85,12 @@ public class DataConverter {
                         "y2bar", "xybar", "x2ybr", "xy2br", "x-ege", "xegvy", "y-edge", "yegvx")
                 .build();
 
+        /* Declaring transformation process */
         TransformProcess tp = new TransformProcess.Builder(inputDataSchema)
-                .categoricalToInteger("lettr")
+                .categoricalToInteger("lettr")  /* Convert the categorical columns "lettr" into an Integer */
                 .build();
 
+        /* Declaring Spark Configuration */
         SparkConf sparkConf = new SparkConf();
         sparkConf.setMaster("local[*]");
         sparkConf.setAppName("Letter Recognition Data Reader Transform");
