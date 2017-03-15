@@ -6,27 +6,56 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.transform.TransformProcess;
 import org.datavec.api.transform.schema.Schema;
+import org.datavec.api.util.ClassPathResource;
 import org.datavec.api.writable.Writable;
 import org.datavec.spark.transform.SparkTransformExecutor;
 import org.datavec.spark.transform.misc.StringToWritablesFunction;
 import org.datavec.spark.transform.misc.WritablesToStringFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Execute this class with program arguments for convert the "letter-recognition.data.txt" file
+ * into a csv file usable by the LetterRecognitionNeuralNetwork
+ * 1 argument needed :
+ * - Hadoop directory : the path where "bin/winutils.exe" can be found
+ */
 public class DataConverter {
+    private static Logger Log = LoggerFactory.getLogger(DataConverter.class);
+
+    private static String hadoopPath;   // "C:\\Program Files (x86)\\Hadoop"
+
+    private static final String FILENAME = "letter-recognition.data.txt";
+
+    private static File file;
+    private static String baseDir;
+    private static String inputPath;
+    private static String outputPath;
+
     public static void main(String args[]) {
-        System.setProperty("hadoop.home.dir", "C:\\Program Files (x86)\\WinUtils");
+        if (args.length == 1)
+            hadoopPath = args[0];
+        else
+            throw new IllegalArgumentException("At least one argument is necessary : the path where bin/winutils.exe" +
+                    "can be found.");
 
-        // int numLinesToSkip = 0;
-        // String delimiter = ",";
+        System.setProperty("hadoop.home.dir", hadoopPath);
 
-        String baseDir = "C:\\Users\\lizeo\\Documents\\jfourmond\\";
+        try {
+            file = new ClassPathResource(FILENAME).getFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        String filename = "letter-recognition.data.txt";
-        String inputPath = baseDir + filename;
+        baseDir = file.getParent();
+        inputPath = file.getAbsolutePath();
         String timeStamp = String.valueOf(new Date().getTime());
-        String outputPath = baseDir + "data_processed_" + timeStamp;
+        outputPath = baseDir + "\\data_processed_" + timeStamp;
 
         /**
          *  1.	lettr	capital letter	(26 values from A to Z)
@@ -59,14 +88,6 @@ public class DataConverter {
                 .categoricalToInteger("lettr")
                 .build();
 
-        int numActions = tp.getActionList().size();
-        for (int i = 0; i < numActions; i++) {
-            System.out.println("`\n\n=========================================");
-            System.out.println("--- Schema after step " + i + " ( " + tp.getActionList().get(i) + " )--");
-            System.out.println(tp.getSchemaAfterStep(i));
-        }
-
-
         SparkConf sparkConf = new SparkConf();
         sparkConf.setMaster("local[*]");
         sparkConf.setAppName("Letter Recognition Data Reader Transform");
@@ -78,6 +99,8 @@ public class DataConverter {
         JavaRDD<String> toSave = processed.map(new WritablesToStringFunction(","));
 
         toSave.saveAsTextFile(outputPath);
+
+        sc.close();
     }
 
 }
