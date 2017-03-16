@@ -12,10 +12,11 @@
 
     <properties>
         <spark.version>2.1.0</spark.version>
-        <datavec.version>0.7.2</datavec.version>
+        <datavec.version>0.8.0</datavec.version>
         <scala.binary.version>2.11</scala.binary.version>
-        <nd4j.version>0.7.2</nd4j.version>
-        <dl4j.version>0.7.2</dl4j.version>
+        <nd4j.version>0.8.0</nd4j.version>
+        <dl4j.version>0.8.0</dl4j.version>
+        <dl4j.spark.version>${dl4j.version}_spark_2</dl4j.spark.version>
         <jfreechart.version>1.0.19</jfreechart.version>
     </properties>
 
@@ -29,7 +30,7 @@
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>dl4j-spark_${scala.binary.version}</artifactId>
-            <version>${dl4j.version}</version>
+            <version>${dl4j.spark.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>spark-core_2.10</artifactId>
