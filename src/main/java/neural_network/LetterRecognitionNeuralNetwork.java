@@ -7,6 +7,7 @@ import org.datavec.api.util.ClassPathResource;
 import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
@@ -48,8 +49,8 @@ public class LetterRecognitionNeuralNetwork {
     private static final int numInputs = 16;
     private static final int numHidden = 52;
     private static final int numOutputs = 26;
-    private static final double learningRate = 0.9;
-    private static final int iterations = 10000;
+    private static final double learningRate = 0.6;
+    private static final int iterations = 100;
     private static final long seed = 13;
 
     private static MultiLayerNetwork net;
@@ -91,6 +92,7 @@ public class LetterRecognitionNeuralNetwork {
                 .activation(Activation.SIGMOID)
                 .weightInit(WeightInit.XAVIER)
                 .learningRate(learningRate)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .regularization(true).l2(1e-4)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(numHidden)
