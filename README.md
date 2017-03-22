@@ -8,6 +8,10 @@ This program use neural networks for Letter Recognition.
 
 It uses the [DeepLearning4J](https://deeplearning4j.org/) library, and a transform result CSV from the dataset taken from [the UC Irvine Machine Learning Repository](http://archive.ics.uci.edu/ml/).
 
+## DataDownloader
+
+The [DataDownloader](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/java/downloader/DataDownloader.java) class can be run in order to download the needed file to the DataConverter and LetterRecognitionNeuralNetwork classes.
+
 ## Data Converter
 
 The [DataConverter](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/java/converter/DataConverter.java) class can be run in order to generate files which can be concatenate to make a [full CSV usable with the neural network](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/resources/letter-recognition.csv).
