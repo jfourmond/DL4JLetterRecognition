@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class LetterRecognitionNeuralNetwork {
     private static Logger Log = LoggerFactory.getLogger(LetterRecognitionNeuralNetwork.class);
@@ -47,13 +48,15 @@ public class LetterRecognitionNeuralNetwork {
 
     private static final int numClasses = 26;
     private static final int numInputs = 16;
-    private static final int numHidden = 52;
+    private static final int numHidden = 62;
     private static final int numOutputs = 26;
-    private static final double learningRate = 0.6;
-    private static final int iterations = 100;
+    private static final double learningRate = 1.0;
+    private static final int iterations = 10000;
     private static final long seed = 13;
 
     private static MultiLayerNetwork net;
+
+    private static Evaluation eval;
 
     private static void loadData() throws IOException, InterruptedException {
         int numLinesToSkip = 0;
@@ -93,7 +96,7 @@ public class LetterRecognitionNeuralNetwork {
                 .weightInit(WeightInit.XAVIER)
                 .learningRate(learningRate)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .regularization(true).l2(1e-4)
+                // .regularization(true).l2(1e-4)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(numHidden)
                         .build())
@@ -119,7 +122,7 @@ public class LetterRecognitionNeuralNetwork {
     private static void evaluate() {
         Log.info("Evaluate neural network...");
 
-        Evaluation eval = new Evaluation(numClasses);
+        eval = new Evaluation(numClasses);
         INDArray output = net.output(testData.getFeatureMatrix());
         eval.eval(testData.getLabels(), output);
 
@@ -128,6 +131,8 @@ public class LetterRecognitionNeuralNetwork {
 
     public static void main(String args[]) throws IOException, InterruptedException {
         Log.info("Launching program.");
+        long start, end, elapsedTime;
+        start = System.nanoTime();
 
         uiServer = UIServer.getInstance();
         statsStorage = new InMemoryStatsStorage();
@@ -139,7 +144,24 @@ public class LetterRecognitionNeuralNetwork {
         train();
         evaluate();
 
-        Log.info("End of the program.");
-    }
+        uiServer.stop();
 
+        Log.info("==========");
+        Log.info("Values : \n" +
+                "Hidden : " + numHidden + "\n" +
+                "Learning rate : " + learningRate + "\n" +
+                "Accuracy : " + eval.accuracy());
+
+        end = System.nanoTime();
+        elapsedTime = end - start;
+        Log.info("End of the program.");
+        Log.info("Execution Time : " + (end - start));
+
+        Log.info("Total execution time: " +
+                String.format("%d min, %d sec",
+                        TimeUnit.NANOSECONDS.toMinutes(elapsedTime),
+                        TimeUnit.NANOSECONDS.toSeconds(elapsedTime) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.NANOSECONDS.toMinutes(elapsedTime))));
+
+    }
 }
