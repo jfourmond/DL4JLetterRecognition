@@ -18,6 +18,8 @@ The [DataConverter](https://github.com/jfourmond/LetterRecognition/blob/master/s
 
 ## Letter Recognition Neural Network
 
+![Neural Network Schema](https://github.com/jfourmond/LetterRecognition/NN_LetterRecognition.jpg "Neural Network Schema")
+
 The [LetterRecognitionNeuralNetwork](https://github.com/jfourmond/LetterRecognition/blob/master/src/main/java/converter/LetterRecognitionNeuralNetwork.java) class can be run in order to visualize and test your configuration, as the raw one has been chosen totally arbitrarily :
 - Number of layers
 - Number of hidden neurons per layers
@@ -40,9 +42,13 @@ In order to run the [DataConverter](https://github.com/jfourmond/LetterRecogniti
 4. Run
 5. If the program runned successfully : generated file can be found in a directory *"data_processed\_[timestamp]"* as *part-00000* and *part-00001*. You just have to concatenate the two files to get a full csv format file.
 
-## Few results
+## Details on data
 
-- Learning rate : 0.6
+Dataset details can be found in the file [letter-recognition.names.txt](letter-recognition.names.txt), or at the MCI repository URL : [http://archive.ics.uci.edu/ml/machine-learning-databases/letter-recognition/letter-recognition.names](http://archive.ics.uci.edu/ml/machine-learning-databases/letter-recognition/letter-recognition.names)
+
+## Best result
+
+- Learning rate : 1.0
 - Activation function : Sigmoid
 - Iterations : 10000
 - Momentum : *none*
@@ -53,36 +59,15 @@ In order to run the [DataConverter](https://github.com/jfourmond/LetterRecogniti
 
 |   Layer    | Input number	| Output number	| Activation function |
 |:----------:|-------------:|--------------:|:-------------------:|
-| 0 (Input)  |         16	|          32	|                     |
-| 2 (Output) |         32	|          26	|        SOFTMAX      |
+| 0 (Input)  |         16	|          60	|                     |
+| 1          |         60	|          60	|                     |
+| 2 (Output) |         60	|          26	|        SOFTMAX      |
 
 |           | Scores |
 |:---------:|-------:|
-| Accuracy  | 0,8792 |
-| Precision | 0,8799 |
-| Recall    | 0,8797 |
-| F1 Score  | 0,8798 |
+| Accuracy  | 0,947  |
+| Precision | 0,9471 |
+| Recall    | 0,947  |
+| F1 Score  | 0,947  |
 
----
-
-- Learning rate : 0.6
-- Activation function : Sigmoid
-- Iterations : 10000
-- Momentum : *none*
-- Split Train and Test dataset : 75%
-- Optimization Algorithm : Stochastic Gradient Descent
-- Seed : *13*
-- Layer detail :
-
-|   Layer    | Input number	| Output number	| Activation function |
-|:----------:|-------------:|--------------:|:-------------------:|
-| 0 (Input)  |         16	|          52	|                     |
-| 1          |         52	|          52	|                     |
-| 2 (Output) |         52	|          26	|        SOFTMAX      |
-
-|           | Scores |
-|:---------:|-------:|
-| Accuracy  | 0,9302 |
-| Precision | 0,93   |
-| Recall    | 0,9305 |
-| F1 Score  | 0,9303 |
+Execution time : 1h03min
